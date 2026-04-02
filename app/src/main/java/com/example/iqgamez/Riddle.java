@@ -2,7 +2,7 @@ package com.example.iqgamez;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ResultGame extends AppCompatActivity {
+public class Riddle extends AppCompatActivity {
         String question;
         String[] options;
         int correctIndex;
@@ -12,4 +12,5 @@ public class ResultGame extends AppCompatActivity {
             options = opt;
             correctIndex = correct;
         }
+
 }
