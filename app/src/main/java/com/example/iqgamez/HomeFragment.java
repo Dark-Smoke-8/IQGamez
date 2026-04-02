@@ -18,6 +18,7 @@ public class HomeFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerGames);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        list.add(new GameModel(R.drawable.riddle_icon, "Riddle Solver"));
 
         return view;
     }

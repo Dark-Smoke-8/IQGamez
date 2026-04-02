@@ -13,7 +13,9 @@
         android:theme="@style/Theme.IQGamez">
         <activity android:name=".SetupActivity"/>
         <activity android:name=".MainActivity"/>
-
+        <activity android:name=".DifficultyActivity"/>
+        <activity android:name=".RiddleGameActivity"/>
+        <activity android:name=".ResultAcitivity"/>
         <activity android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
