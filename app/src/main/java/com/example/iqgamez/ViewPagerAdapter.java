@@ -13,12 +13,13 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch (position) {
-            case 1: return new LeaderboardFragment();
-            case 2: return new SettingsFragment();
+            case 1: return new HomeFragment();
+            case 2: return new LeaderboardFragment();
+            case 3: return new SettingsFragment();
             default: return new HomeFragment();
         }
     }
-
+    
     @Override
     public int getItemCount() {
         return 3;

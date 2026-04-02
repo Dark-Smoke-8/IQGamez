@@ -36,14 +36,15 @@ public class ResultActivity extends AppCompatActivity {
         boolean isWin = (score == 10);
 
         if (isWin) {
-            ivAnimation.setImageResource(R.drawable.win_anim); // GIF or animation
-            resultSound = MediaPlayer.create(this, R.raw.win_sound);
+            //ivAnimation.setImageResource(R.drawable.win_anim); // GIF or animation
+            resultSound = MediaPlayer.create(this, R.raw.game_sound); //R.raw.win_sound placeholder
             tvResult.setText("YOU WON");
         } else {
-            ivAnimation.setImageResource(R.drawable.lose_anim);
-            resultSound = MediaPlayer.create(this, R.raw.lose_sound);
+            //ivAnimation.setImageResource(R.drawable.lose_anim);
+            resultSound = MediaPlayer.create(this, R.raw.game_sound); //R.raw.lose_sound placeholder
             tvResult.setText("YOU LOST");
         }
+
 
         resultSound.setLooping(true);
         resultSound.start();
