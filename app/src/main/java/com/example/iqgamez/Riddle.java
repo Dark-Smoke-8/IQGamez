@@ -1,16 +1,14 @@
 package com.example.iqgamez;
 
-import androidx.appcompat.app.AppCompatActivity;
+public class Riddle {
 
-public class Riddle extends AppCompatActivity {
-        String question;
-        String[] options;
-        int correctIndex;
+    public String question;
+    public String[] options;
+    public int correctIndex;
 
-        public Riddle(String q, String[] opt, int correct) {
-            question = q;
-            options = opt;
-            correctIndex = correct;
-        }
-
+    public Riddle(String question, String[] options, int correctIndex) {
+        this.question = question;
+        this.options = options;
+        this.correctIndex = correctIndex;
+    }
 }
