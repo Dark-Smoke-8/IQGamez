@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -47,7 +48,6 @@ public class RiddleGameActivity extends AppCompatActivity {
         startTimer();
         rootLayout = findViewById(R.id.rootLayout);
 
-// background ticking sound
         gamesound = MediaPlayer.create(this, R.raw.game_sound);
         gamesound.setLooping(true);
         gamesound.start();
@@ -176,7 +176,7 @@ public class RiddleGameActivity extends AppCompatActivity {
     }
 
     private void showQuestion() {
-        if (currentQuestion >= 10) {
+        if (currentQuestion >= riddles.size()) {
             endGame();
             return;
         }
@@ -202,14 +202,30 @@ public class RiddleGameActivity extends AppCompatActivity {
             if (v == opt3) selected = 2;
             if (v == opt4) selected = 3;
 
+            if (answered) return;
+            answered = true;
+            opt1.setEnabled(false);
+            opt2.setEnabled(false);
+            opt3.setEnabled(false);
+            opt4.setEnabled(false);
+
+            highlightAnswers(selected, r.correctIndex);
+
             if (selected == r.correctIndex) {
                 score++;
                 tvScore.setText("Score: " + score);
+                tvCorrectAnswer.setText("Correct!");
+            } else {
+                tvCorrectAnswer.setText("The correct answer was: " + r.options[r.correctIndex]);
             }
 
-            currentQuestion++;
-            resetTimer();
-            showQuestion();
+            tvCorrectAnswer.setVisibility(View.VISIBLE);
+
+            timer.cancel();
+
+            new Handler().postDelayed(() -> {
+                moveToNextQuestion();
+            }, 3000);
         };
 
         opt1.setOnClickListener(listener);
@@ -217,7 +233,17 @@ public class RiddleGameActivity extends AppCompatActivity {
         opt3.setOnClickListener(listener);
         opt4.setOnClickListener(listener);
     }
+    private void moveToNextQuestion() {
 
+        currentQuestion++;
+
+        if (currentQuestion >= riddles.size()) {
+            endGame();
+        } else {
+            resetUI();
+            showQuestion();
+        }
+    }
     private void startTimer() {
         timer = new CountDownTimer(30000, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -231,19 +257,37 @@ public class RiddleGameActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
+
                 stopFlashingEffect();
-                currentQuestion++;
-                showQuestion();
+
+                Riddle r = riddles.get(currentQuestion);
+
+                highlightAnswers(-1, r.correctIndex);
+
+                tvCorrectAnswer.setText("Correct answer was: " + r.options[r.correctIndex]);
+                tvCorrectAnswer.setVisibility(View.VISIBLE);
+
+                new Handler().postDelayed(() -> {
+                    currentQuestion++;
+
+                    if (currentQuestion < riddles.size()) {
+                        resetUI();
+                        showQuestion();
+                    } else {
+                        endGame();
+                    }
+
+                }, 3000);
             }
         }.start();
     }
 
     private void startFlashingEffect() {
-        rootLayout.animate()
-                .alpha(0.5f)
-                .setDuration(300)
-                .withEndAction(() -> rootLayout.animate().alpha(1f).setDuration(300))
-                .start();
+        rootLayout.setBackgroundColor(Color.RED);
+
+        rootLayout.postDelayed(() -> {
+            rootLayout.setBackgroundResource(R.drawable.splash_gradient);
+        }, 300);
     }
 
     private void stopFlashingEffect() {
@@ -279,15 +323,55 @@ public class RiddleGameActivity extends AppCompatActivity {
                 .setNegativeButton("Continue", (d, i) -> startTimer())
                 .show();
     }
+    private void resetUI() {
 
+        answered = false;
+
+        Button[] buttons = {opt1, opt2, opt3, opt4};
+
+        for (Button b : buttons) {
+            b.setBackgroundColor(Color.parseColor("#6200EE"));
+        }
+
+        tvCorrectAnswer.setVisibility(View.GONE);
+        resetTimer();
+        opt1.setEnabled(true);
+        opt2.setEnabled(true);
+        opt3.setEnabled(true);
+        opt4.setEnabled(true);
+    }
     private void endGame() {
+
+        if (timer != null) timer.cancel();
+
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra("score", score);
+
         startActivity(intent);
-        if (gamesound != null) {
-            gamesound.stop();
-            gamesound.release();
-        }
+
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (gamesound != null) gamesound.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (gamesound != null) gamesound.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (gamesound != null) {
+            gamesound.release();
+            gamesound = null;
+        }
     }
 }
