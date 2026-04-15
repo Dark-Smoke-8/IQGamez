@@ -9,11 +9,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ResultActivity extends AppCompatActivity {
-    ImageView ivAnimation;
+    VideoView videoView;
     TextView tvResult;
     LinearLayout buttonLayout;
 
@@ -24,7 +25,7 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
-        ivAnimation = findViewById(R.id.ivAnimation);
+        videoView = findViewById(R.id.videoView);
         tvResult = findViewById(R.id.tvResult);
         buttonLayout = findViewById(R.id.buttonLayout);
 
@@ -35,17 +36,35 @@ public class ResultActivity extends AppCompatActivity {
 
         boolean isWin = (score == 10);
 
+        String videoPath;
+
         if (isWin) {
-            ivAnimation.setImageResource(R.raw.win_anim);
+            videoPath = "android.resource://" + getPackageName() + "/" + R.raw.win_anim;
             resultSound = MediaPlayer.create(this, R.raw.win_sound);
             tvResult.setText("YOU WON");
         } else {
-            ivAnimation.setImageResource(R.raw.lose_anim);
+            videoPath = "android.resource://" + getPackageName() + "/" + R.raw.lose_anim;
             resultSound = MediaPlayer.create(this, R.raw.lose_sound);
             tvResult.setText("YOU LOST");
         }
 
-        resultSound.setLooping(true);
+        videoView.setVideoPath(videoPath);
+        videoView.start();
+        videoView.setOnPreparedListener(mp -> {
+            mp.setLooping(true);
+
+            float videoRatio = mp.getVideoWidth() / (float) mp.getVideoHeight();
+            float screenRatio = videoView.getWidth() / (float) videoView.getHeight();
+            float scale = videoRatio / screenRatio;
+
+            if (scale >= 1f) {
+                videoView.setScaleX(scale);
+            } else {
+                videoView.setScaleY(1f / scale);
+            }
+        });
+
+        videoView.setOnCompletionListener(mp -> videoView.start());
         resultSound.start();
 
         new Handler().postDelayed(() -> {
