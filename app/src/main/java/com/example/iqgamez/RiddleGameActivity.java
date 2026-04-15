@@ -23,7 +23,7 @@ public class RiddleGameActivity extends AppCompatActivity {
     TextView tvQuestion, tvScore, tvTimer;
     Button opt1, opt2, opt3, opt4;
     ImageView btnBack;
-
+    PrefManager prefManager;
     int score = 0;
     int currentQuestion = 0;
     CountDownTimer timer;
@@ -41,6 +41,7 @@ public class RiddleGameActivity extends AppCompatActivity {
 
         // GET DIFFICULTY
         difficulty = getIntent().getStringExtra("difficulty");
+        prefManager = new PrefManager(this);
 
         initViews();
         loadRiddles();
@@ -346,6 +347,7 @@ public class RiddleGameActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra("score", score);
+        prefManager.addScore("Riddle Solver", difficulty, score);
 
         startActivity(intent);
 
