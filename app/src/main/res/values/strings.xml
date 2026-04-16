@@ -15,4 +15,13 @@
     <string name="Start">Start</string>
     <string name="Game">Game</string>
 
+    <string name="card_app">Match Cards Game</string>
+    <string name="grid_view">Grid View</string>
+    <string name="dismiss_error">Dismiss</string>
+    <string name="matching_cards_game">Matching Cards Game</string>
+    <string name="btn_medium">Medium</string>
+    <string name="txt_matches">Matches: 0/0</string>
+    <string name="moves">Moves: 0</string>
+    <string name="btn_hard">Hard</string>
+    <string name="btn_easy">Easy</string>
 </resources>

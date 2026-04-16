@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".CardActivity">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/matching_cards_game"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+        <Button
+            android:id="@+id/btnEasy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/btn_easy" />
+
+        <Button
+            android:id="@+id/btnMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/btn_medium" />
+
+        <Button
+            android:id="@+id/btnHard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/btn_hard" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/statsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/txtMatches"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_matches"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginEnd="5dp"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/txtMoves"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/moves"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/txtTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time: 60s"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:layout_margin="8dp"
+            />
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/endScreenOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:visibility="gone"
+        android:clickable="true">
+
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:background="@color/white"
+            android:padding="24dp"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="YOU WON!"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:id="@+id/txtEndScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Moves: 0\nTime: 0s"
+                android:textSize="18dp"
+                android:gravity="center"
+                android:layout_marginBottom="20dp"/>
+            <Button
+                android:id="@+id/btnPlayAgain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Play Again"/>
+        </LinearLayout>
+
+    </FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
