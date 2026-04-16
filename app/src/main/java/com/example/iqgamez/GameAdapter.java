@@ -16,10 +16,17 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
 
     Context context;
     List<GameModel> list;
+    boolean isLeaderboard = false;
 
     public GameAdapter(Context context, List<GameModel> list) {
         this.context = context;
         this.list = list;
+    }
+
+    public GameAdapter(Context context, List<GameModel> list, boolean isLeaderboard) {
+        this.context = context;
+        this.list = list;
+        this.isLeaderboard = isLeaderboard;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -51,6 +58,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(v -> {
             if (game.name.equals("Riddle Solver")) {
                 Intent intent = new Intent(context, DifficultyActivity.class);
+                if (isLeaderboard) {intent.putExtra("isLeaderboard", isLeaderboard);}
                 context.startActivity(intent);
             }
         });

@@ -11,6 +11,7 @@ public class DifficultyActivity extends AppCompatActivity {
 
     Button btnEasy, btnMedium, btnHard;
     ImageView btnBack;
+    boolean isLeaderboard;
 
 
     @Override
@@ -22,6 +23,7 @@ public class DifficultyActivity extends AppCompatActivity {
         btnMedium = findViewById(R.id.btnMedium);
         btnHard = findViewById(R.id.btnHard);
         btnBack = findViewById(R.id.btnBack);
+        isLeaderboard = getIntent().getBooleanExtra("isLeaderboard", false);
 
         btnBack.setOnClickListener(v -> finish());
         btnEasy.setOnClickListener(v -> startGame("easy"));
@@ -30,7 +32,13 @@ public class DifficultyActivity extends AppCompatActivity {
     }
 
     private void startGame(String difficulty) {
-        Intent intent = new Intent(this, RiddleGameActivity.class);
+        Intent intent;
+
+        if (isLeaderboard)
+        {intent = new Intent(this, RiddleGameLeaderboard.class);}
+        else
+        {intent = new Intent(this, RiddleGameActivity.class);}
+
         intent.putExtra("difficulty", difficulty);
         startActivity(intent);
     }
