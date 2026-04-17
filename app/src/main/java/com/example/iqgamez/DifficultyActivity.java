@@ -13,6 +13,8 @@ public class DifficultyActivity extends AppCompatActivity {
     ImageView btnBack;
     boolean isLeaderboard;
 
+    String gameType;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,7 @@ public class DifficultyActivity extends AppCompatActivity {
         btnHard = findViewById(R.id.btnHard);
         btnBack = findViewById(R.id.btnBack);
         isLeaderboard = getIntent().getBooleanExtra("isLeaderboard", false);
+        gameType = getIntent().getStringExtra("gameType");
 
         btnBack.setOnClickListener(v -> finish());
         btnEasy.setOnClickListener(v -> startGame("easy"));
@@ -34,10 +37,18 @@ public class DifficultyActivity extends AppCompatActivity {
     private void startGame(String difficulty) {
         Intent intent;
 
-        if (isLeaderboard)
-        {intent = new Intent(this, RiddleGameLeaderboard.class);}
-        else
-        {intent = new Intent(this, RiddleGameActivity.class);}
+        // If this screen was opened for leaderboard, keep old behavior
+        if (isLeaderboard) {
+            intent = new Intent(this, RiddleGameLeaderboard.class);
+        } else {
+            // Open different game based on gameType
+            if ("multiplication".equals(gameType)) {
+                intent = new Intent(this, Game1Activity.class);
+            } else {
+                // Default to riddle game
+                intent = new Intent(this, RiddleGameActivity.class);
+            }
+        }
 
         intent.putExtra("difficulty", difficulty);
         startActivity(intent);

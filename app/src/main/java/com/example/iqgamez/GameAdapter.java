@@ -56,9 +56,21 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
         holder.gameName.setText(game.name);
 
         holder.itemView.setOnClickListener(v -> {
+            Intent intent;
+
             if (game.name.equals("Riddle Solver")) {
-                Intent intent = new Intent(context, DifficultyActivity.class);
-                if (isLeaderboard) {intent.putExtra("isLeaderboard", isLeaderboard);}
+                intent = new Intent(context, DifficultyActivity.class);
+                intent.putExtra("gameType", "riddle");
+
+                if (isLeaderboard) {
+                    intent.putExtra("isLeaderboard", true);
+                }
+
+                context.startActivity(intent);
+
+            } else if (game.name.equals("Multiplication Puzzle")) {
+                intent = new Intent(context, DifficultyActivity.class);
+                intent.putExtra("gameType", "multiplication");
                 context.startActivity(intent);
             }
         });
