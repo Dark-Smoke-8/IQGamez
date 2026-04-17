@@ -48,6 +48,7 @@ public class Scoreboard
     {
         return scoreList;
     }
+    public int getScores(int i) {return scoreList.get(i);}
 
     public String getGame()
     {
