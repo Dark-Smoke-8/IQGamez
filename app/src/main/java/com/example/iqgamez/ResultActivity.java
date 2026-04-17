@@ -33,8 +33,29 @@ public class ResultActivity extends AppCompatActivity {
         Button btnPlayAgain = findViewById(R.id.btnPlayAgain);
 
         int score = getIntent().getIntExtra("score", 0);
+        String gameName = getIntent().getStringExtra("gameName");
 
-        boolean isWin = (score == 10);
+        if (gameName == null) {
+            gameName = "Game Result";
+        }
+
+        String gameType = "riddle";
+
+        if (gameName != null && gameName.equals("Multiplication Puzzle")) {
+            gameType = "multiplication";
+        }
+
+        final String finalGameType = gameType;
+
+        boolean isWin;
+
+    // If a game sends isWin, use it.
+    // Otherwise, keep the old logic: score == 10
+        if (getIntent().hasExtra("isWin")) {
+            isWin = getIntent().getBooleanExtra("isWin", false);
+        } else {
+            isWin = (score == 10);
+        }
 
         String videoPath;
 
@@ -80,7 +101,11 @@ public class ResultActivity extends AppCompatActivity {
 
         btnPlayAgain.setOnClickListener(v -> {
             stopSound();
-            startActivity(new Intent(this, DifficultyActivity.class));
+
+            Intent intent = new Intent(this, DifficultyActivity.class);
+            intent.putExtra("gameType", finalGameType);
+            startActivity(intent);
+
             finish();
         });
     }

@@ -1,92 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp"
-    android:background="#1a1a2e">
+    android:background="#1a1a2e"
+    android:padding="24dp">
 
-    <!-- Score & Timer Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Back button -->
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:src="@android:drawable/ic_menu_revert"
+        android:contentDescription="Back" />
+
+    <!-- Timer -->
+    <TextView
+        android:id="@+id/tvTimer"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="20s"
+        android:textColor="#ff6b6b"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
+    <!-- Score -->
+    <TextView
+        android:id="@+id/tvScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
+        android:text="Score: 0"
+        android:textColor="#ffffff"
+        android:textSize="18sp" />
+
+    <!-- For game contents -->
+    <LinearLayout
+        android:id="@+id/centerContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_below="@id/tvTimer">
+
+        <!-- Question number-->
         <TextView
-            android:id="@+id/tvScore"
-            android:layout_width="0dp"
+            android:id="@+id/tvQuestionNum"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Score: 0"
+            android:text="Question 1 / 10"
+            android:textColor="#aaaaaa"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp" />
+
+        <!-- Equation display-->
+        <TextView
+            android:id="@+id/tvEquation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="6 x ? = 48"
             android:textColor="#ffffff"
-            android:textSize="18sp"/>
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:layout_marginTop="40dp" />
 
-        <TextView
-            android:id="@+id/tvTimer"
-            android:layout_width="0dp"
+        <!-- Answer input -->
+        <EditText
+            android:id="@+id/etAnswer"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="20s"
-            android:textColor="#ff6b6b"
-            android:textSize="18sp"/>
+            android:inputType="number"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="24sp"
+            android:backgroundTint="#ffffff"
+            android:autofillHints="off"
+            android:hint="Enter answer"
+            android:textColorHint="#bbbbbb"
+            android:layout_marginTop="32dp" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:textSize="18sp"
+            android:backgroundTint="#e94560"
+            android:layout_marginTop="24dp" />
+
+        <!-- Feedback message-->
+        <TextView
+            android:id="@+id/tvFeedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp" />
 
     </LinearLayout>
 
-    <!-- Question Number -->
-    <TextView
-        android:id="@+id/tvQuestionNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Question 1 / 10"
-        android:textColor="#aaaaaa"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"/>
-
-    <!-- Equation Display -->
-    <TextView
-        android:id="@+id/tvEquation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="6 x ? = 48"
-        android:textColor="#ffffff"
-        android:textSize="48sp"
-        android:textStyle="bold"
-        android:layout_marginTop="40dp"/>
-
-    <!-- Answer Input -->
-    <EditText
-        android:id="@+id/etAnswer"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:backgroundTint="#ffffff"
-        android:autofillHints="off"
-        android:layout_marginTop="32dp"/>
-
-    <!-- Submit Button -->
-    <Button
-        android:id="@+id/btnSubmit"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:textSize="18sp"
-        android:backgroundTint="#e94560"
-        android:layout_marginTop="24dp"/>
-
-    <!-- Feedback Message -->
-    <TextView
-        android:id="@+id/tvFeedback"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginTop="24dp"/>
-
-</LinearLayout>
+</RelativeLayout>

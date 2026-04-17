@@ -1,41 +1,50 @@
 package com.example.iqgamez;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 public class Game1Activity extends AppCompatActivity {
 
     // UI elements
+    View rootLayout;
     TextView tvScore, tvTimer, tvQuestionNum, tvEquation, tvFeedback;
     EditText etAnswer;
     Button btnSubmit;
+    ImageView btnBack;
 
     // Game variables
     int score = 0;
     int questionIndex = 0;
     int correctAnswer = 0;
-    int timePerQuestion = 20; // default Easy
+    int timePerQuestion = 20;
+    String difficulty = "easy";
     CountDownTimer countDownTimer;
-
-    // To avoid duplicate questions
-    ArrayList<String> usedEquations = new ArrayList<>();
     Random random = new Random();
+    ArrayList<String> usedEquations = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game1);
 
-        // Link UI
+        // Connect Java variables to XML views
+        rootLayout = findViewById(R.id.rootLayout);
         tvScore       = findViewById(R.id.tvScore);
         tvTimer       = findViewById(R.id.tvTimer);
         tvQuestionNum = findViewById(R.id.tvQuestionNum);
@@ -43,101 +52,197 @@ public class Game1Activity extends AppCompatActivity {
         tvFeedback    = findViewById(R.id.tvFeedback);
         etAnswer      = findViewById(R.id.etAnswer);
         btnSubmit     = findViewById(R.id.btnSubmit);
+        btnBack = findViewById(R.id.btnBack);
 
-        // Get difficulty from Intent (sent by MainActivity)
-        String difficulty = getIntent().getStringExtra("difficulty");
-        if (difficulty == null) difficulty = "easy";
+        // Get difficulty from previous screen
+        difficulty = getIntent().getStringExtra("difficulty");
+        if (difficulty == null) {
+            difficulty = "easy";
+        }
 
         // Set timer based on difficulty
-        if (difficulty.equals("medium")) timePerQuestion = 12;
-        else if (difficulty.equals("hard")) timePerQuestion = 7;
-        else timePerQuestion = 20;
+        if (difficulty.equals("medium")) {
+            timePerQuestion = 15;
+        } else if (difficulty.equals("hard")) {
+            timePerQuestion = 10;
+        } else {
+            timePerQuestion = 20;
+        }
 
+        // Load the first question
         loadNextQuestion();
 
+        // Set up submit button
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkAnswer();
             }
         });
+
+        //set up back button
+        btnBack.setOnClickListener(v -> showExitDialog());
+
+        // Handle phone back button
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showExitDialog();
+            }
+        });
     }
 
+
+    // Called after every question to move to the next one
     void loadNextQuestion() {
         if (questionIndex >= 10) {
             endGame();
             return;
         }
 
-        // Clear previous feedback and input
+        // Reset background for next question
+        stopFlashingEffect();
+
+        // Clear screen for next question
         tvFeedback.setText("");
         etAnswer.setText("");
         tvQuestionNum.setText("Question " + (questionIndex + 1) + " / 10");
 
-        // Generate a unique equation
+        // Generate a new equation and start the timer
         generateEquation();
-
-        // Start countdown
         startTimer();
     }
 
+    // Generates a random math equation based on difficulty
     void generateEquation() {
-        int a, b;
         String equation;
+        int a, b;
 
-        // Keep generating until we get one not used before
         do {
-            a = random.nextInt(10) + 1; // 1 to 10
-            b = random.nextInt(10) + 1;
-            int product = a * b;
-            correctAnswer = b;
-            equation = a + " × ? = " + product;
+            a = getRandomNumber();
+            b = getRandomNumber();
+
+            if (difficulty.equals("hard")) {
+                int operation = random.nextInt(3);
+
+                if (operation == 0) {
+                    // e.g. 6 x ? = 48
+                    correctAnswer = b;
+                    equation = a + " x ? = " + (a * b);
+
+                } else if (operation == 1) {
+                    // e.g. 48 / 6 = ?
+                    correctAnswer = a;
+                    equation = (a * b) + " / " + b + " = ?";
+
+                } else {
+                    // e.g. ? x 6 = 48
+                    correctAnswer = a;
+                    equation = "? x " + b + " = " + (a * b);
+                }
+
+            } else if (difficulty.equals("medium")) {
+                int operation = random.nextInt(2);
+
+                if (operation == 0) {
+                    // e.g. 6 x ? = 48
+                    correctAnswer = b;
+                    equation = a + " x ? = " + (a * b);
+
+                } else {
+                    // e.g. 48 / 6 = ?
+                    correctAnswer = a;
+                    equation = (a * b) + " / " + b + " = ?";
+                }
+
+            } else {
+                // Easy: multiplication only
+                // e.g. 6 x ? = 48
+                correctAnswer = b;
+                equation = a + " x ? = " + (a * b);
+            }
+
         } while (usedEquations.contains(equation));
 
         usedEquations.add(equation);
         tvEquation.setText(equation);
     }
 
-    void startTimer() {
-        if (countDownTimer != null) countDownTimer.cancel();
+    // Returns a random number based on difficulty range
+    int getRandomNumber() {
+        if (difficulty.equals("hard")) {
+            return random.nextInt(50) + 1; // 1 to 50
+        } else if (difficulty.equals("medium")) {
+            return random.nextInt(20) + 1; // 1 to 20
+        } else {
+            return random.nextInt(10) + 1; // 1 to 10
+        }
+    }
 
-        countDownTimer = new CountDownTimer(timePerQuestion * 1000L, 1000) {
+    // Starts the countdown timer for each question
+    void startTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+
+        countDownTimer = new CountDownTimer(timePerQuestion * 1000, 1000) {
+
             @Override
             public void onTick(long millisUntilFinished) {
-                tvTimer.setText("⏱ " + millisUntilFinished / 1000 + "s");
+                int secondsLeft = (int) (millisUntilFinished / 1000);
+                tvTimer.setText(secondsLeft + "s");
+
+                // Flash when time is low
+                if (secondsLeft <= 5) {
+                    startFlashingEffect();
+                }
             }
 
             @Override
             public void onFinish() {
-                // Time ran out — minus 5 points
-                score -= 5;
+                stopFlashingEffect();
+
+                // Time ran out
+                score = score - 5;
                 tvScore.setText("Score: " + score);
+
                 tvFeedback.setText("Time up! Answer was " + correctAnswer);
                 tvFeedback.setTextColor(getResources().getColor(android.R.color.holo_red_light));
 
-                questionIndex++;
+                questionIndex = questionIndex + 1;
+
                 // Wait 1.5 seconds then load next question
-                tvEquation.postDelayed(() -> loadNextQuestion(), 1500);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadNextQuestion();
+                    }
+                }, 1500);
             }
+
         }.start();
     }
 
+    // Checks if the player's answer is correct
     void checkAnswer() {
-        if (countDownTimer != null) countDownTimer.cancel();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        stopFlashingEffect();
 
         String input = etAnswer.getText().toString().trim();
 
         if (input.isEmpty()) {
             tvFeedback.setText("Please enter an answer!");
             tvFeedback.setTextColor(getResources().getColor(android.R.color.holo_orange_light));
-            startTimer(); // restart timer
+            startTimer();
             return;
         }
 
         int playerAnswer = Integer.parseInt(input);
 
         if (playerAnswer == correctAnswer) {
-            score += 10;
+            score = score + 10;
             tvFeedback.setText("Correct!");
             tvFeedback.setTextColor(getResources().getColor(android.R.color.holo_green_light));
         } else {
@@ -146,38 +251,105 @@ public class Game1Activity extends AppCompatActivity {
         }
 
         tvScore.setText("Score: " + score);
-        questionIndex++;
+        questionIndex = questionIndex + 1;
 
         // Wait 1.5 seconds then load next question
-        tvEquation.postDelayed(() -> loadNextQuestion(), 1500);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadNextQuestion();
+            }
+        }, 1500);
     }
 
+    // Makes the screen flash red when time is low
+    void startFlashingEffect() {
+        rootLayout.setBackgroundColor(Color.RED);
+
+        rootLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rootLayout.setBackgroundColor(Color.parseColor("#1a1a2e"));
+            }
+        }, 300);
+    }
+
+    // Resets the background color
+    void stopFlashingEffect() {
+        rootLayout.setBackgroundColor(Color.parseColor("#1a1a2e"));
+    }
+
+    // Shows a message when the user wants to quit the game
+    void showExitDialog() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Quit Game")
+                .setMessage("Are you sure you want to quit?")
+                .setPositiveButton("Quit", (dialog, which) -> finish())
+                .setNegativeButton("Cancel", (dialog, which) -> startTimer())
+                .show();
+    }
+
+    // This method saves the high score for the current difficulty
+    void saveHighScore() {
+        // Save high score to SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("BrainZonePrefs", MODE_PRIVATE);
+
+        // Example keys for my understanding
+        // score_multiplication_easy
+        // score_multiplication_medium
+        // score_multiplication_hard
+        SharedPreferences.Editor editor = prefs.edit();
+
+        // Get the current saved high score for this difficulty
+        String key = "score_multiplication_" + difficulty;
+        int savedHighScore = prefs.getInt(key, 0);
+
+        // Only save if current score is higher
+        if (score > savedHighScore) {
+            editor.putInt(key, score);
+            editor.apply();
+        }
+    }
+
+    // Called when all 10 questions are done
     void endGame() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
 
-        if (countDownTimer != null) countDownTimer.cancel();
+        saveHighScore();
 
-        // TODO: uncomment when teammate creates ResultActivity
-        // Intent intent = new Intent(this, ResultActivity.class);
-        // intent.putExtra("score", score);
-        // intent.putExtra("gameName", "Multiplication Puzzle");
-        // startActivity(intent);
-        // finish();
-
-        // Temporary - just show final score as feedback
-        tvFeedback.setText("Game Over! Final Score: " + score);
-        tvFeedback.setTextColor(getResources().getColor(android.R.color.holo_blue_light));
-        btnSubmit.setEnabled(false);
+        // Send score to ResultActivity
+        Intent intent = new Intent(Game1Activity.this, ResultActivity.class);
+        intent.putExtra("score", score);
+        intent.putExtra("gameName", "Multiplication Puzzle");
+        intent.putExtra("isWin", score >= 50);
+        startActivity(intent);
+        finish();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (countDownTimer != null) countDownTimer.cancel();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (countDownTimer != null) countDownTimer.cancel();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 }
