@@ -1,8 +1,12 @@
 package com.example.iqgamez;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -27,6 +31,13 @@ public class Game1Activity extends AppCompatActivity {
     EditText etAnswer;
     Button btnSubmit;
     ImageView btnBack;
+
+    // Sound variables
+    MediaPlayer mpBackground;
+    MediaPlayer mpCorrect;
+    MediaPlayer mpWrong;
+    MediaPlayer mpTick;
+    BroadcastReceiver batteryLowReceiver;
 
     // Game variables
     int score = 0;
@@ -90,6 +101,8 @@ public class Game1Activity extends AppCompatActivity {
                 showExitDialog();
             }
         });
+
+        initSounds();
     }
 
 
@@ -195,6 +208,11 @@ public class Game1Activity extends AppCompatActivity {
                 // Flash when time is low
                 if (secondsLeft <= 5) {
                     startFlashingEffect();
+                    // Play tick sound when time is running out
+                    if (mpTick != null) {
+                        mpTick.seekTo(0);
+                        mpTick.start();
+                    }
                 }
             }
 
@@ -203,7 +221,10 @@ public class Game1Activity extends AppCompatActivity {
                 stopFlashingEffect();
 
                 // Time ran out
-                score = score - 5;
+                // Only deduct points if score is above 0
+                if (score > 0) {
+                    score = score - 5;
+                }
                 tvScore.setText("Score: " + score);
 
                 tvFeedback.setText("Time up! Answer was " + correctAnswer);
@@ -245,9 +266,21 @@ public class Game1Activity extends AppCompatActivity {
             score = score + 10;
             tvFeedback.setText("Correct!");
             tvFeedback.setTextColor(getResources().getColor(android.R.color.holo_green_light));
+            if (mpCorrect != null) {
+                mpCorrect.seekTo(0);
+                mpCorrect.start();
+            }
         } else {
+            // Only deduct points if score is above 0
+            if (score > 0) {
+                score = score - 5;
+            }
             tvFeedback.setText("Wrong! Answer was " + correctAnswer);
             tvFeedback.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            if (mpWrong != null) {
+                mpWrong.seekTo(0);
+                mpWrong.start();
+            }
         }
 
         tvScore.setText("Score: " + score);
@@ -293,6 +326,17 @@ public class Game1Activity extends AppCompatActivity {
                 .show();
     }
 
+    void initSounds() {
+        mpBackground = MediaPlayer.create(this, R.raw.gamemulti_musicbg);
+        mpBackground.setLooping(true);
+        mpBackground.setVolume(0.5f, 0.5f);
+        mpBackground.start();
+
+        mpCorrect = MediaPlayer.create(this, R.raw.multi_correct_sound);
+        mpWrong = MediaPlayer.create(this, R.raw.multi_wrong_sound);
+        mpTick = MediaPlayer.create(this, R.raw.multi_clocktimer_sound);
+    }
+
     // This method saves the high score for the current difficulty
     void saveHighScore() {
         // Save high score to SharedPreferences
@@ -335,14 +379,56 @@ public class Game1Activity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        // Pause timer when leaving the screen
         if (countDownTimer != null) {
             countDownTimer.cancel();
+        }
+        // Pause background music
+        if (mpBackground != null && mpBackground.isPlaying()) {
+            mpBackground.pause();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        // Resume background music when coming back to the game
+        if (mpBackground != null && !mpBackground.isPlaying()) {
+            mpBackground.start();
+        }
+
+        // Register battery low receiver
+        batteryLowReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // When battery is low, pause the game and warn the player
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                }
+
+                // Stop background music to save battery
+                if (mpBackground != null && mpBackground.isPlaying()) {
+                    mpBackground.pause();
+                }
+
+                // Show a warning dialog to the player
+                new AlertDialog.Builder(Game1Activity.this)
+                        .setTitle("Low Battery!")
+                        .setMessage("Your battery is low. The game has been paused. Please charge your device!")
+                        .setPositiveButton("Resume", (dialog, which) -> {
+                            // Resume music and restart timer
+                            if (mpBackground != null) {
+                                mpBackground.start();
+                            }
+                            startTimer();
+                        })
+                        .setNegativeButton("Quit", (dialog, which) -> finish())
+                        .show();
+            }
+        };
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_LOW);
+        registerReceiver(batteryLowReceiver, filter);
     }
 
     @Override
@@ -350,6 +436,30 @@ public class Game1Activity extends AppCompatActivity {
         super.onDestroy();
         if (countDownTimer != null) {
             countDownTimer.cancel();
+        }
+
+        // Unregister battery receiver to avoid memory leaks
+        if (batteryLowReceiver != null) {
+            unregisterReceiver(batteryLowReceiver);
+        }
+
+        // Release all sounds to free up memory
+        if (mpBackground != null) {
+            mpBackground.stop();
+            mpBackground.release();
+            mpBackground = null;
+        }
+        if (mpCorrect != null) {
+            mpCorrect.release();
+            mpCorrect = null;
+        }
+        if (mpWrong != null) {
+            mpWrong.release();
+            mpWrong = null;
+        }
+        if (mpTick != null) {
+            mpTick.release();
+            mpTick = null;
         }
     }
 }

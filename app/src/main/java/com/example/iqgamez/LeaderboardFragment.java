@@ -32,6 +32,7 @@ public class LeaderboardFragment extends Fragment {
 
         list.add(new GameModel(R.drawable.riddle_icon, "Riddle Solver"));
         list.add(new GameModel(R.drawable.cards_icon, "Card Game"));
+        list.add(new GameModel(R.drawable.multi_icon, "Multiplication Puzzle"));
 
         adapter = new GameAdapter(getContext(), list, true);
         recyclerView.setAdapter(adapter);
