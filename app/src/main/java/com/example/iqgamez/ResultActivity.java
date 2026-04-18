@@ -104,6 +104,8 @@ public class ResultActivity extends AppCompatActivity {
 
             Intent intent = new Intent(this, DifficultyActivity.class);
             intent.putExtra("gameType", finalGameType);
+            // Clear the back stack so pressing back goes to home
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
 
             finish();
