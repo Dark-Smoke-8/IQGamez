@@ -43,6 +43,8 @@ public class ResultActivity extends AppCompatActivity {
 
         if (gameName != null && gameName.equals("Multiplication Puzzle")) {
             gameType = "multiplication";
+        }else if( gameName != null && gameName.equals("Card Game")){
+            gameType = "card";
         }
 
         final String finalGameType = gameType;

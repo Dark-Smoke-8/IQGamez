@@ -72,7 +72,12 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.ViewHolder> {
                 intent = new Intent(context, DifficultyActivity.class);
                 intent.putExtra("gameType", "multiplication");
                 context.startActivity(intent);
+            }else if(game.name.equals("Card Game")){
+                intent = new Intent(context, DifficultyActivity.class);
+                intent.putExtra("gameType", "card");
+                context.startActivity(intent);
             }
+
         });
     }
 

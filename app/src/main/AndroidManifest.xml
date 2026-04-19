@@ -18,6 +18,13 @@
         <activity android:name=".RiddleGameActivity"/>
         <activity android:name=".ResultActivity"/>
         <activity android:name=".Game1Activity" />
+        <activity android:name=".CardActivity"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.iqgamez.MainActivity"/>
+        </activity>
+
 
         <activity android:name=".SplashActivity"
             android:exported="true">

@@ -82,7 +82,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.RecyclerView
 
                 if(allCardsMatched()){
                     if(listener!= null){
-                        listener.onGameWon();
+                        listener.showEndScreen();
                     }
                 }
 

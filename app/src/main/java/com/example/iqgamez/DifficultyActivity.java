@@ -44,7 +44,9 @@ public class DifficultyActivity extends AppCompatActivity {
             // Open different game based on gameType
             if ("multiplication".equals(gameType)) {
                 intent = new Intent(this, Game1Activity.class);
-            } else {
+            } else if ("card".equals((gameType))){
+                intent = new Intent(this, CardActivity.class);
+            }else{
                 // Default to riddle game
                 intent = new Intent(this, RiddleGameActivity.class);
             }

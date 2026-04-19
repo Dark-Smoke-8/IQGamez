@@ -6,7 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".CardActivity">
+    tools:context=".CardActivity"
+    android:textColor="@color/white"
+    android:background="@drawable/splash_gradient">
+
+
+    <ImageView
+        android:id="@+id/btnBack"
+        android:src="@android:drawable/ic_menu_revert"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,35 +24,10 @@
         android:textStyle="bold"
         android:gravity="center"
         android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:textColor="@color/white"
+        />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginBottom="16dp">
-        <Button
-            android:id="@+id/btnEasy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_easy" />
-
-        <Button
-            android:id="@+id/btnMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_medium" />
-
-        <Button
-            android:id="@+id/btnHard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_hard" />
-    </LinearLayout>
     <LinearLayout
         android:id="@+id/statsContainer"
         android:layout_width="match_parent"
@@ -59,6 +44,7 @@
             android:textStyle="bold"
             android:textSize="18sp"
             android:layout_marginEnd="5dp"
+            android:textColor="@color/white"
             android:visibility="gone"/>
         <TextView
             android:id="@+id/txtMoves"
@@ -67,6 +53,7 @@
             android:text="@string/moves"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="@color/white"
             android:visibility="gone"/>
         <TextView
             android:id="@+id/txtTimer"
@@ -74,6 +61,7 @@
             android:layout_height="wrap_content"
             android:text="Time: 60s"
             android:textSize="16sp"
+            android:textColor="@color/white"
             android:visibility="gone"
             android:layout_margin="8dp"
             />
@@ -90,7 +78,7 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:background="@color/white"
+            android:background="@drawable/splash_gradient"
             android:padding="24dp"
             android:layout_gravity="center"
             android:orientation="vertical">
@@ -102,6 +90,7 @@
                 android:text=""
                 android:textSize="22sp"
                 android:textStyle="bold"
+                android:textColor="@color/white"
                 android:layout_marginBottom="16dp"/>
 
             <LinearLayout
@@ -115,6 +104,8 @@
                     android:text="Moves: "
                     android:textSize="18dp"
                     android:gravity="center"
+                    android:textColor="@color/white"
+
                     android:layout_marginBottom="20dp"/>
                 <TextView
                     android:id="@+id/txtEndMoves"
@@ -123,6 +114,7 @@
                     android:text="0"
                     android:textSize="18dp"
                     android:gravity="center"
+                    android:textColor="@color/white"
                     android:layout_marginBottom="20dp"/>
             </LinearLayout>
             <LinearLayout
@@ -136,6 +128,7 @@
                     android:text="Time Left: "
                     android:textSize="18dp"
                     android:gravity="center"
+                    android:textColor="@color/white"
                     android:layout_marginBottom="20dp"/>
                 <TextView
                     android:id="@+id/txtEndTime"
@@ -144,15 +137,10 @@
                     android:text="0"
                     android:textSize="18dp"
                     android:gravity="center"
+                    android:textColor="@color/white"
                     android:layout_marginBottom="20dp"/>
             </LinearLayout>
-
-
-            <Button
-                android:id="@+id/btnPlayAgain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Play Again"/>
+            
         </LinearLayout>
 
     </FrameLayout>
