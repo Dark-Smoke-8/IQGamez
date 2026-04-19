@@ -39,14 +39,21 @@ public class DifficultyActivity extends AppCompatActivity {
 
         // If this screen was opened for leaderboard, keep old behavior
         if (isLeaderboard) {
-            intent = new Intent(this, RiddleGameLeaderboard.class);
-        } else {
+            intent = new Intent(this, GameLeaderboard.class);
+            intent.putExtra("gameType", gameType);
+        }
+        else {
             // Open different game based on gameType
-            if ("multiplication".equals(gameType)) {
+            if (gameType.equals("Multiplication Puzzle"))
+            {
                 intent = new Intent(this, Game1Activity.class);
-            } else if ("card".equals((gameType))){
+            }
+            else if (gameType.equals("Card Game"))
+            {
                 intent = new Intent(this, CardActivity.class);
-            }else{
+            }
+            else
+            {
                 // Default to riddle game
                 intent = new Intent(this, RiddleGameActivity.class);
             }

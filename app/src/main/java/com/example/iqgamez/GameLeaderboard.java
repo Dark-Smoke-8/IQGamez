@@ -6,31 +6,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class RiddleGameLeaderboard extends AppCompatActivity {
+public class GameLeaderboard extends AppCompatActivity {
     TextView scoreTextView;
     PrefManager prefManager;
-    Scoreboard riddleScore;
-    String difficulty, scoreText, game;
+    Scoreboard score;
+    String difficulty, scoreText, gameType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.leaderboard_riddle_game);
-        scoreTextView = findViewById(R.id.leaderboardRiddleScores);
+        setContentView(R.layout.leaderboard);
+        scoreTextView = findViewById(R.id.leaderboardScores);
 
         prefManager = new PrefManager(this);
-        game = "Riddle Solver";
+        gameType = getIntent().getStringExtra("gameType");
         difficulty = getIntent().getStringExtra("difficulty");
-        riddleScore = new Scoreboard(game, difficulty);
+        score = new Scoreboard(gameType, difficulty);
+        scoreText = "";
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < score.getScores().size(); i++)
         {
-            scoreText += i + ".\t" + Integer.toString(riddleScore.getScores(i)) + "\n";
+            scoreText += (i + 1) + ".\t" + Integer.toString(score.getScores(i)) + "\n";
         }
 
         scoreTextView.setText(scoreText);

@@ -18,6 +18,7 @@ public class PrefManager {
     private static final String KEY_AGE = "playerAge";
     private static final String KEY_RIDDLE = "riddleSolverScore";
     private static final String KEY_CARD = "cardGameScore";
+    private static final String KEY_MULT = "multiplicationPuzzleScore";
 
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -76,6 +77,17 @@ public class PrefManager {
             editor.apply();
         }
 
+        else if (scoreBoard.getGame().equals("Multiplication Puzzle"))
+        {
+            String name;
+            for (int i = 0; i < newScores.size(); i++)
+            {
+                name = KEY_MULT + scoreBoard.getDifficulty() + i;
+                editor.putInt(name, newScores.get(i));
+            }
+            editor.apply();
+        }
+
         else
         {
             Log.v("PrefManager", "Couldn't recognize game called: " + scoreBoard.getGame());
@@ -108,6 +120,16 @@ public class PrefManager {
             for (int i = 0; i < 5; i++)
             {
                 name = KEY_CARD + difficulty + i;
+                scoreBoard.addScore(pref.getInt(name, 0));
+            }
+        }
+
+        else if (game.equals("Multiplication Puzzle"))
+        {
+            String name;
+            for (int i = 0; i < 5; i++)
+            {
+                name = KEY_MULT + difficulty + i;
                 scoreBoard.addScore(pref.getInt(name, 0));
             }
         }
