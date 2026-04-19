@@ -17,17 +17,20 @@ public class ResultActivity extends AppCompatActivity {
     VideoView videoView;
     TextView tvResult;
     LinearLayout buttonLayout;
-
+    PrefManager prefManager;
     MediaPlayer resultSound;
+    boolean musicCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
+        prefManager = new PrefManager(this);
 
         videoView = findViewById(R.id.videoView);
         tvResult = findViewById(R.id.tvResult);
         buttonLayout = findViewById(R.id.buttonLayout);
+        musicCheck = prefManager.getMusic();
 
         Button btnHome = findViewById(R.id.btnHome);
         Button btnPlayAgain = findViewById(R.id.btnPlayAgain);
@@ -88,7 +91,10 @@ public class ResultActivity extends AppCompatActivity {
         });
 
         videoView.setOnCompletionListener(mp -> videoView.start());
-        resultSound.start();
+        if (musicCheck)
+        {
+            resultSound.start();
+        }
 
         new Handler().postDelayed(() -> {
             tvResult.setVisibility(View.VISIBLE);

@@ -27,6 +27,7 @@
         <activity android:name=".GameLeaderboard" />
 
 
+
         <activity android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>

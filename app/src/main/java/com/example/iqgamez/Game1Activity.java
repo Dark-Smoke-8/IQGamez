@@ -29,8 +29,10 @@ public class Game1Activity extends AppCompatActivity {
     View rootLayout;
     TextView tvScore, tvTimer, tvQuestionNum, tvEquation, tvFeedback;
     EditText etAnswer;
+    PrefManager prefManager;
     Button btnSubmit;
     ImageView btnBack;
+    boolean musicCheck, sfxCheck;
 
     // Sound variables
     MediaPlayer mpBackground;
@@ -53,6 +55,7 @@ public class Game1Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game1);
+        prefManager = new PrefManager(this);
 
         // Connect Java variables to XML views
         rootLayout = findViewById(R.id.rootLayout);
@@ -64,6 +67,9 @@ public class Game1Activity extends AppCompatActivity {
         etAnswer      = findViewById(R.id.etAnswer);
         btnSubmit     = findViewById(R.id.btnSubmit);
         btnBack = findViewById(R.id.btnBack);
+
+        musicCheck = prefManager.getMusic();
+        sfxCheck = prefManager.getSfx();
 
         // Get difficulty from previous screen
         difficulty = getIntent().getStringExtra("difficulty");
@@ -209,7 +215,7 @@ public class Game1Activity extends AppCompatActivity {
                 if (secondsLeft <= 5) {
                     startFlashingEffect();
                     // Play tick sound when time is running out
-                    if (mpTick != null) {
+                    if (mpTick != null && sfxCheck) {
                         mpTick.seekTo(0);
                         mpTick.start();
                     }
@@ -266,7 +272,7 @@ public class Game1Activity extends AppCompatActivity {
             score = score + 10;
             tvFeedback.setText("Correct!");
             tvFeedback.setTextColor(getResources().getColor(android.R.color.holo_green_light));
-            if (mpCorrect != null) {
+            if (mpCorrect != null && sfxCheck) {
                 mpCorrect.seekTo(0);
                 mpCorrect.start();
             }
@@ -277,7 +283,7 @@ public class Game1Activity extends AppCompatActivity {
             }
             tvFeedback.setText("Wrong! Answer was " + correctAnswer);
             tvFeedback.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            if (mpWrong != null) {
+            if (mpWrong != null && sfxCheck) {
                 mpWrong.seekTo(0);
                 mpWrong.start();
             }
@@ -328,9 +334,12 @@ public class Game1Activity extends AppCompatActivity {
 
     void initSounds() {
         mpBackground = MediaPlayer.create(this, R.raw.gamemulti_musicbg);
-        mpBackground.setLooping(true);
-        mpBackground.setVolume(0.5f, 0.5f);
-        mpBackground.start();
+        if (musicCheck)
+        {
+            mpBackground.setLooping(true);
+            mpBackground.setVolume(0.5f, 0.5f);
+            mpBackground.start();
+        }
 
         mpCorrect = MediaPlayer.create(this, R.raw.multi_correct_sound);
         mpWrong = MediaPlayer.create(this, R.raw.multi_wrong_sound);
@@ -340,23 +349,25 @@ public class Game1Activity extends AppCompatActivity {
     // This method saves the high score for the current difficulty
     void saveHighScore() {
         // Save high score to SharedPreferences
-        SharedPreferences prefs = getSharedPreferences("BrainZonePrefs", MODE_PRIVATE);
+        //SharedPreferences prefs = getSharedPreferences("BrainZonePrefs", MODE_PRIVATE);
 
         // Example keys for my understanding
         // score_multiplication_easy
         // score_multiplication_medium
         // score_multiplication_hard
-        SharedPreferences.Editor editor = prefs.edit();
+        //SharedPreferences.Editor editor = prefs.edit();
 
         // Get the current saved high score for this difficulty
-        String key = "score_multiplication_" + difficulty;
-        int savedHighScore = prefs.getInt(key, 0);
+        //String key = "score_multiplication_" + difficulty;
+        //int savedHighScore = prefs.getInt(key, 0);
 
         // Only save if current score is higher
-        if (score > savedHighScore) {
-            editor.putInt(key, score);
-            editor.apply();
-        }
+        //if (score > savedHighScore) {
+        //    editor.putInt(key, score);
+        //    editor.apply();
+        //}
+        // Code commented due to preexisting addScore function
+        prefManager.addScore("Multiplication Puzzle", difficulty, score);
     }
 
     // Called when all 10 questions are done
@@ -393,7 +404,7 @@ public class Game1Activity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Resume background music when coming back to the game
-        if (mpBackground != null && !mpBackground.isPlaying()) {
+        if (mpBackground != null && !mpBackground.isPlaying() && musicCheck) {
             mpBackground.start();
         }
 
@@ -417,7 +428,7 @@ public class Game1Activity extends AppCompatActivity {
                         .setMessage("Your battery is low. The game has been paused. Please charge your device!")
                         .setPositiveButton("Resume", (dialog, which) -> {
                             // Resume music and restart timer
-                            if (mpBackground != null) {
+                            if (mpBackground != null && musicCheck) {
                                 mpBackground.start();
                             }
                             startTimer();

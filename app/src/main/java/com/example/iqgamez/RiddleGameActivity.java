@@ -29,6 +29,7 @@ public class RiddleGameActivity extends AppCompatActivity {
     CountDownTimer timer;
     TextView tvCorrectAnswer;
     boolean answered = false;
+    boolean sfxCheck, musicCheck;
     List<Riddle> riddles = new ArrayList<>();
     String difficulty;
     MediaPlayer gamesound;
@@ -48,10 +49,15 @@ public class RiddleGameActivity extends AppCompatActivity {
         showQuestion();
         startTimer();
         rootLayout = findViewById(R.id.rootLayout);
+        musicCheck = prefManager.getMusic();
+        sfxCheck = prefManager.getSfx();
 
         gamesound = MediaPlayer.create(this, R.raw.game_sound);
-        gamesound.setLooping(true);
-        gamesound.start();
+        if (musicCheck)
+        {
+            gamesound.setLooping(true);
+            gamesound.start();
+        }
     }
 
     private void initViews() {
@@ -365,7 +371,7 @@ public class RiddleGameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (gamesound != null) gamesound.start();
+        if (gamesound != null && musicCheck) gamesound.start();
     }
 
     @Override

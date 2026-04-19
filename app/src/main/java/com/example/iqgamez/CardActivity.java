@@ -47,6 +47,7 @@ public class CardActivity extends AppCompatActivity implements OnItemClickListen
     ArrayList<Card> cardList;
     ImageView btnBack;
     TextView txtMoves, txtMatches, txtTimer, txtEncore, txtEndTime, txtEndMoves, resultGame;
+    boolean musicCheck, sfxCheck;
     private CountDownTimer gameTimer;
     View endScreenOverlay;
     private static final int GAME_TIME_SECONDS= 60;
@@ -84,6 +85,8 @@ public class CardActivity extends AppCompatActivity implements OnItemClickListen
         btnBack=findViewById(R.id.btnBack);
         gameSound = MediaPlayer.create(this, R.raw.game_sound);
         gameSound.setLooping(true);
+        musicCheck = prefManager.getMusic();
+        sfxCheck = prefManager.getSfx();
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
@@ -238,7 +241,7 @@ public class CardActivity extends AppCompatActivity implements OnItemClickListen
                         .setTitle("Low Battery!")
                         .setMessage("Your battery is low. The game has been paused. Please charge your device!")
                         .setPositiveButton("Resume", (dialog, which) -> {
-                            if (gameSound != null) {
+                            if (gameSound != null && musicCheck) {
                                 gameSound.start();
                             }
                             startTimer();
@@ -255,7 +258,7 @@ public class CardActivity extends AppCompatActivity implements OnItemClickListen
     protected void onResume() {
         super.onResume();
 
-        if (gameSound != null && !gameSound.isPlaying()) {
+        if (gameSound != null && !gameSound.isPlaying() && musicCheck) {
             gameSound.start();
         }
 
@@ -274,7 +277,7 @@ public class CardActivity extends AppCompatActivity implements OnItemClickListen
                         .setTitle("Low Battery!")
                         .setMessage("Your battery is low. The game has been paused. Please charge your device!")
                         .setPositiveButton("Resume", (dialog, which) -> {
-                            if (gameSound != null) {
+                            if (gameSound != null && musicCheck) {
                                 gameSound.start();
                             }
                             startTimer();
@@ -302,6 +305,7 @@ public class CardActivity extends AppCompatActivity implements OnItemClickListen
 
         Intent intent = new Intent(CardActivity.this, ResultActivity.class);
         intent.putExtra("score", matches);
+        prefManager.addScore("Card Game", difficulty, matches);
         intent.putExtra("gameName", "Card Game");
         intent.putExtra("isWin", matches == currentDifficulty);
 

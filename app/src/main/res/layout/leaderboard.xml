@@ -63,13 +63,19 @@ android:layout_height="match_parent">
     <!-- VIEWPAGER -->
     <TextView
         android:id="@+id/leaderboardScores"
-        android:text="@string/scores"
+        android:text="Scores"
         android:textColor="#FFFFFF"
         android:textSize="26sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"/>
+
+    <Button
+        android:id="@+id/buttonClear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clear Leaderboard!" />
 </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

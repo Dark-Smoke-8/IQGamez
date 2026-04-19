@@ -3,11 +3,7 @@ package com.example.iqgamez;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.google.android.material.color.utilities.Score;
-
-import java.io.Console;
 import java.util.ArrayList;
 
 public class PrefManager {
@@ -16,6 +12,8 @@ public class PrefManager {
     private static final String KEY_FIRST_TIME = "isFirstTime";
     private static final String KEY_NAME = "playerName";
     private static final String KEY_AGE = "playerAge";
+    private static final String KEY_MUSIC = "musicToggle";
+    private static final String KEY_SFX = "sfxToggle";
     private static final String KEY_RIDDLE = "riddleSolverScore";
     private static final String KEY_CARD = "cardGameScore";
     private static final String KEY_MULT = "multiplicationPuzzleScore";
@@ -45,6 +43,24 @@ public class PrefManager {
 
     public String getName() {
         return pref.getString(KEY_NAME, "Player");
+    }
+
+    public void setMusic(boolean music){
+        editor.putBoolean(KEY_MUSIC, music);
+        editor.apply();
+    }
+
+    public boolean getMusic(){
+        return  pref.getBoolean(KEY_MUSIC, true);
+    }
+
+    public void setSfx(boolean sfx){
+        editor.putBoolean(KEY_SFX, sfx);
+        editor.apply();
+    }
+
+    public boolean getSfx(){
+        return  pref.getBoolean(KEY_SFX, true);
     }
 
     public int getAge() {
@@ -140,5 +156,11 @@ public class PrefManager {
         }
 
         return scoreBoard;
+    }
+
+    public void clearScore(String game, String difficulty)
+    {
+        Scoreboard tempBoard = new Scoreboard(game, difficulty, 0, 0, 0, 0, 0);
+        setScores(tempBoard);
     }
 }
